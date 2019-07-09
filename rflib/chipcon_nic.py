@@ -1429,7 +1429,7 @@ class NICxx11(USBDongle):
             try:
                 y, t = self.RFrecv()
                 #print "(%5.3f) Received:  %s" % (t, y.encode('hex'))
-                encoded_y = binascii.b2a_hex(y)
+                encoded_y = y.encode('hex')
                 print("(%5.3f) Received:  %s  | %s" % (t, encoded_y, makeFriendlyAscii(y)))
                 capture.append(y)
                 hexa.append(encoded_y)
