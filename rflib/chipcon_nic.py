@@ -1301,6 +1301,28 @@ class NICxx11(USBDongle):
 
         self.send(APP_NIC, NIC_XMIT, struct.pack("<HHH",len(data),repeat,offset) + str.encode(data), wait=wait)
 
+    def RFxmitbytes(self, data, repeat=0, offset=0):
+        # encode, if necessary
+        if self.endec is not None:
+            data = self.endec.encode(data)
+
+        if len(data) > RF_MAX_TX_BLOCK:
+            if repeat or offset:
+                return PY_TX_BLOCKSIZE_INCOMPAT
+            return self.RFxmitLong(data, doencoding=False)
+
+        # calculate wait time
+        waitlen = len(data)
+        waitlen += repeat * (len(data) - offset)
+        wait = USB_TX_WAIT * ((waitlen / RF_MAX_TX_BLOCK) + 1)
+
+        if type(data) == str:
+            print("Data is a str. Encoding...")
+            self.send(APP_NIC, NIC_XMIT, struct.pack("<HHH",len(data),repeat,offset) + str.encode(data), wait=wait)
+        elif type(data) == bytes:
+            print("Data is in bytes")
+            self.send(APP_NIC, NIC_XMIT, struct.pack("<HHH", len(data), repeat, offset) + data, wait=wait)
+
     def RFxmitLong(self, data, doencoding=True):
         # encode, if necessary
         if self.endec is not None and doencoding:
