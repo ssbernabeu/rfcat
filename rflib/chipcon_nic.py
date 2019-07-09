@@ -1416,8 +1416,8 @@ class NICxx11(USBDongle):
         return capture
 
     def experimentalRFcapture(self):
-        #same function as RFcapture but it gices back the raw hex (no \x dividers)
-        ''' dump packets as they come in, but return a list of packets when you exit capture mode.
+        #same function as RFcapture but it gives back the raw hex (no \x dividers)
+        ''' dump packets as they come in, but return an array with the raw hex, encoded hex and times of packets when you exit capture mode.
         kinda like discover() but without changing any of the communications settings '''
         capture = []
         time = []
@@ -1429,11 +1429,11 @@ class NICxx11(USBDongle):
             try:
                 y, t = self.RFrecv()
                 #print "(%5.3f) Received:  %s" % (t, y.encode('hex'))
-                encoded_y = y.encode('hex')
-                print("(%5.3f) Received:  %s  | %s" % (t, encoded_y, makeFriendlyAscii(y)))
+                encoded_y = binascii.b2a_hex(y)
+                print("(%5.3f) Received:  %s  | %s" % (t, encoded_y, y))
                 capture.append(y)
                 hexa.append(encoded_y)
-                time.append(t)
+                time = [time, t]
 
             except ChipconUsbTimeoutException:
                 pass
