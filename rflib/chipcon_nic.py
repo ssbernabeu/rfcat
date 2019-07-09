@@ -1433,7 +1433,7 @@ class NICxx11(USBDongle):
                 print("(%5.3f) Received:  %s  | %s" % (t, encoded_y, y))
                 capture.append(y)
                 hexa.append(encoded_y)
-                time = [time, t]
+                time.append(t)
 
             except ChipconUsbTimeoutException:
                 pass
@@ -1442,6 +1442,7 @@ class NICxx11(USBDongle):
 
         sys.stdin.read(1)
         data = capture, hexa, time
+        print("Returning data: ")
         return data
 
     def discover(self, lowball=1, debug=None, length=30, IdentSyncWord=False, ISWsensitivity=4, ISWminpreamble=2, SyncWordMatchList=None, Search=None, RegExpSearch=None):
