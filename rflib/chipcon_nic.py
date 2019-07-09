@@ -1415,6 +1415,35 @@ class NICxx11(USBDongle):
         sys.stdin.read(1)
         return capture
 
+    def experimentalRFcapture(self):
+        #same function as RFcapture but it gices back the raw hex (no \x dividers)
+        ''' dump packets as they come in, but return a list of packets when you exit capture mode.
+        kinda like discover() but without changing any of the communications settings '''
+        capture = []
+        time = []
+        hexa = []
+        print("Entering RFlisten mode...  packets arriving will be displayed on the screen (and returned in a list)")
+        print("(press Enter to stop)")
+        while not keystop():
+
+            try:
+                y, t = self.RFrecv()
+                #print "(%5.3f) Received:  %s" % (t, y.encode('hex'))
+                encoded_y = y.encode('hex')
+                print("(%5.3f) Received:  %s  | %s" % (t, encoded_y, makeFriendlyAscii(y)))
+                capture.append(y)
+                hexa.append(encoded_y)
+                time.append(t)
+
+            except ChipconUsbTimeoutException:
+                pass
+            except KeyboardInterrupt:
+                print("Please press <enter> to stop")
+
+        sys.stdin.read(1)
+        data = capture, hexa, time
+        return data
+
     def discover(self, lowball=1, debug=None, length=30, IdentSyncWord=False, ISWsensitivity=4, ISWminpreamble=2, SyncWordMatchList=None, Search=None, RegExpSearch=None):
         '''
         discover() sets lowball mode to the mode requested (length too), and begins to dump packets to the screen.
