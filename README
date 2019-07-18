@@ -1,4 +1,7 @@
-Welcome to the rfcat project. This is a forked version developed by @ssbernabeu. Initial software was developed y @atlas0fd00m and their team, and the python3 support was done by @nosajthenitram. Main changes in this repo are just the addition of listening and transmitting functions that suited the project I am working on.
+Welcome to the rfcat project. This is a forked version developed by @ssbernabeu. Initial software was developed by
+@atlas0fd00m and their team, and the python3 support was done by @nosajthenitram.
+Main changes in this branch are just the addition of some listening and transmitting functions that suited the project I
+am working on.
 
 = TOC =
 * Goals
@@ -12,9 +15,10 @@ Welcome to the rfcat project. This is a forked version developed by @ssbernabeu.
 the goals of the project are to reduce the time for security researchers to create needed tools for analyzing unknown targets, to aid in reverse-engineering of hardware, and to satiate my rf lust.
 
 == REQUIREMENTS ==
-RfCat currently requires Python 2.x.  the only suspected incompatabilities with Python 3.x are minimal, mostly print("stuff") versus print "stuff".
+This specific branch of RfCat works with Python 3.x. There are some non-fatal errors regarding threading that
+I have not been able to solve.
 
-Other requirements:
+Other requirements (see all below under Installing - Cient side):
 * python usb
 * libusb - should be able to work with either 1.x or 0.1 versions.  please let us know if you run into issues.
 
