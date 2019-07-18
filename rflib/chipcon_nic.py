@@ -1285,7 +1285,6 @@ class NICxx11(USBDongle):
     ##### RADIO XMIT/RECV and UTILITY FUNCTIONS #####
     # set repeat & offset to optionally repeat tx of a section of the data block. repeat of 65535 means 'forever'
     def RFxmit(self, data, repeat=0, offset=0):
-        # encode, if necessary
         if self.endec is not None:
             data = self.endec.encode(data)
 
@@ -1303,6 +1302,8 @@ class NICxx11(USBDongle):
 
     def RFxmitbytes(self, data, repeat=0, offset=0):
         # encode, if necessary
+        # print(self.endec)
+        # print(type(data)
         if self.endec is not None:
             data = self.endec.encode(data)
 
@@ -1437,34 +1438,59 @@ class NICxx11(USBDongle):
         sys.stdin.read(1)
         return capture
 
-    def experimentalRFcapture(self):
+    def RFcaptureanddecode(self):
         #same function as RFcapture but it gives back the raw hex (no \x dividers)
-        ''' dump packets as they come in, but return an array with the raw hex, encoded hex and times of packets when you exit capture mode.
+        ''' dump packets as they come in, but return a list of arrays with the raw hex, encoded hex and times of packets when you exit capture mode.
         kinda like discover() but without changing any of the communications settings '''
-        capture = []
-        time = []
-        hexa = []
+        capture   = []
+        timestamp = []
+        hexa      = []
         print("Entering RFlisten mode...  packets arriving will be displayed on the screen (and returned in a list)")
-        print("(press Enter to stop)")
+        print("(please press Enter to stop)")
         while not keystop():
-
             try:
-                y, t = self.RFrecv()
-                #print "(%5.3f) Received:  %s" % (t, y.encode('hex'))
+                y, tt = self.RFrecv()
+                #print "(%5.3f) Received:  %s" % (timestamp, y.encode('hex'))
                 encoded_y = binascii.b2a_hex(y)
-                print("(%5.3f) Received:  %s  | %s" % (t, encoded_y, y))
+                print("(%5.3f) Received:  %s  | %s" % (tt, encoded_y, y))
                 capture.append(y)
                 hexa.append(encoded_y)
-                time.append(t)
+                timestamp.append(tt)
 
             except ChipconUsbTimeoutException:
                 pass
             except KeyboardInterrupt:
-                print("Please press <enter> to stop")
+                break
 
         sys.stdin.read(1)
-        data = capture, hexa, time
+        data = capture, hexa, timestamp
         print("Returning data: ")
+        return data
+
+    def RFcaptureanddecodewithstop(self,timeout=USB_RX_WAIT):
+        #same function as RFcapture but it gives back the raw hex (no \x dividers)
+        ''' return a list of arrays with the raw hex, encoded hex and time stamp of packets after using RFrecv() for a given time.'''
+        capture   = []
+        timestamp = []
+        hexa      = []
+        #print("Entering RFlisten mode...  packets arriving will be displayed on the screen (and returned in a list)")
+        starttime = time.time()
+        while (time.time() - starttime) < timeout:
+            try:
+                y, tt = self.RFrecv()
+                #print "(%5.3f) Received:  %s" % (t, y.encode('hex'))
+                encoded_y = binascii.b2a_hex(y)
+                #print("(%5.3f) Received:  %s  | %s" % (tt, encoded_y, y))
+                capture.append(y)
+                hexa.append(encoded_y)
+                timestamp.append(tt)
+
+            except ChipconUsbTimeoutException:
+                pass
+
+        #sys.stdin.read(1)
+        data = capture, hexa, timestamp
+        #print("Returning data: ")
         return data
 
     def discover(self, lowball=1, debug=None, length=30, IdentSyncWord=False, ISWsensitivity=4, ISWminpreamble=2, SyncWordMatchList=None, Search=None, RegExpSearch=None):

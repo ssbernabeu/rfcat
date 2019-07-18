@@ -16,12 +16,13 @@ Research Mode: enjoy the raw power of rflib
 currently your environment has an object called "d" for dongle.  this is how 
 you interact with the rfcat dongle:
     >>> d.ping()
-    >>> d.setFreq(433000000)
-    >>> d.setMdmModulation(MOD_ASK_OOK)
+    >>> d.setFreq(437290000)
+    >>> d.setMdmModulation(MOD_GFSK)
+    >>> d.setMdmRate(9600)
     >>> d.makePktFLEN(250)
     >>> d.RFxmit("HALLO")
     >>> d.RFrecv()
-    >>> print d.reprRadioConfig()
+    >>> print(d.reprRadioConfig())
 
 """
 

@@ -313,7 +313,30 @@ class USBDongle:
                 #if console or self._debug: print >>sys.stderr,("Error in resetup():" + repr(e))
                 time.sleep(1)
 
+    def resetup2(self, console=True, copyDongle=None):
+        self._do=None
+        if self._bootloader:
+            return
+        #self._threadGo = True
+        if self._debug: print(("waiting (resetup) %x" % self.idx), file=sys.stderr)
+        while (self._do==None):
+            try:
+                self.setup(console, copyDongle)
+                if copyDongle is None:
+                    self._clear_buffers(False)
+                self.ping(3, wait=10, silent=True)
+                self.setRfMode(self._rfmode)
 
+            except Exception as e:
+                #if console: sys.stderr.write('.')
+                if not self._quiet:
+                    print(("Error in resetup():" + repr(e)), file=sys.stderr)
+                    print ('-'*60)
+                    traceback.print_exc(file=sys.stdout)
+                    print ('-'*60)
+                    os.system("sudo /home/pi/uhubctl/./uhubctl -a cycle -p 2 -d 0.25")
+                #if console or self._debug: print >>sys.stderr,("Error in resetup():" + repr(e))
+                time.sleep(1)
 
     ########  BASE FOUNDATIONAL "HIDDEN" CALLS ########
     def _sendEP0(self, request=0, buf=None, value=0x200, index=0, timeout=DEFAULT_USB_TIMEOUT):

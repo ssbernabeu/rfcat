@@ -1,4 +1,4 @@
-welcome to the rfcat project
+Welcome to the rfcat project. This is a forked version developed by @ssbernabeu. Initial software was developed y @atlas0fd00m and their team, and the python3 support was done by @nosajthenitram. Main changes in this repo are just the addition of listening and transmitting functions that suited the project I am working on.
 
 = TOC =
 * Goals
@@ -209,15 +209,26 @@ for YARDSTICKONE:
 The new version will be installed, and bootloader exited.
 
 = INSTALLING - CLIENT-SIDE =
-Dependencies:  python-usb and libusb
+Dependencies:  python-usb and libusb (@ssbernabeu note: Moreover, I determined from experience that you should have the following also installed in your RPi before being able to run rfcat)
+
+First, if needed, update the basic needs:
+    sudo apt-get update
+    pip install --upgrade pip
+Then:
+    sudo apt-get install python-usb             (or python3-usb if you want to use Python3)
+    sudo apt-get install libusb-1.0-0-dev
+    pip install matplotlib --user
+    pip install future –user                    (not necessary for Python3)
+    pip install bitstring --user
+    pip install typing --user
+    pip install pyusb –user
 
 install rfcat onto your system.  on most linux systems, this will place rfcat and rfcat_server in /usr/local/bin/ and rflib into /usr/*/lib/python2.x/dist-packages
 installation is simple:
 
 * cd into the rfcat directory (created by unpacking the tarball or by hg clone)
 * sudo python setup.py install
-* i highly recommend installing "ipython" (for deb/ubuntu folk: apt-get install ipython)
-
+* i highly recommend installing "ipython" (for deb/ubuntu folk: sudo apt-get install ipython)
 
 
 = USING RFCAT - NON-root MODE =
@@ -238,6 +249,7 @@ if you have configured your system to allow non-root use:
     * d.setPktPQT(0)            # this sets the preamble quality threshold to 0
     * d.setEnableMdmFEC(True)   # enables the convolutional Forward Error Correction built into the radio
 
+(@ssbernabeu note: to use resetup2, uhubctl module must be installed.)
 
 while the toolset was created to make communicating with <ghz much easier, you will find the cc1111 manual from ti a great value.  the better you understand the radio, the better your experience will be.
 play with the radio settings, but i recommend playing in small amounts and watch for the effects.  several things in the radio configuration settings are mandatory to get right in order to receive or transmit anything (one of those odd requirements is the TEST2/1/0 registers!)
